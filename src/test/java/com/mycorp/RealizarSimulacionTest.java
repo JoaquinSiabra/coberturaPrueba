@@ -3,21 +3,21 @@ package com.mycorp;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
-import org.junit.BeforeClass;
+import java.util.Date;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnit44Runner;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
+import com.mycorp.support.DatosCliente;
 import com.mycorp.support.MensajeriaService;
 import com.mycorp.support.ZendeskHelper;
 
-import junit.framework.TestCase;
 import portalclientesweb.ejb.interfaces.PortalClientesWebEJBRemote;
+import util.datos.DatosPersonales;
+import util.datos.DetallePoliza;
 import util.datos.PolizaBasico;
 import util.datos.UsuarioAlta;
 
@@ -30,7 +30,6 @@ public class RealizarSimulacionTest {
 
 	private static String NUM_TARJETA = "NUM_TARJETA";
 	private static String NUM_POLIZA = "12345";
-	private static String NUM_ACRED = "12345";
 
 	@InjectMocks
 	ZendeskService zendeskService = new ZendeskService();
@@ -47,7 +46,6 @@ public class RealizarSimulacionTest {
      */
     @Test
     public void testApp() {
-       // assertTrue( true );
     }
     
     @Test
@@ -55,7 +53,6 @@ public class RealizarSimulacionTest {
     	UsuarioAlta usuarioAlta = new UsuarioAlta();
     	String userAgent = "AGENT";
     	zendeskService.altaTicketZendesk(usuarioAlta, userAgent);
-       // assertTrue( true );
     }
     
     @Test
@@ -64,11 +61,18 @@ public class RealizarSimulacionTest {
     	usuarioAlta.setNumPoliza(NUM_POLIZA);
     	String userAgent = "AGENT";
     	
-        when(zendeskHelper.createPolizaBasicoFromUsuarioAlta(any(UsuarioAlta.class))).thenReturn(new PolizaBasico());
-
-    	
+        when(zendeskHelper.createPolizaBasicoFromUsuarioAlta(any(UsuarioAlta.class))).thenReturn(new PolizaBasico()); 
+        
+        DetallePoliza detallePoliza = new DetallePoliza();
+        DatosPersonales tomador = new DatosPersonales();
+        detallePoliza.setTomador(tomador);        
+        when(portalclientesWebEJBRemote.recuperarDatosPoliza(any(PolizaBasico.class))).thenReturn(detallePoliza);  
+        
+        DatosCliente datos = new DatosCliente();
+        datos.setFechaNacimiento("01/08/2017");
+        datos.setGenCTipoDocumento(1);
+        when(zendeskHelper.obtenerDatosCliente(any(String.class))).thenReturn(datos);   
     	zendeskService.altaTicketZendesk(usuarioAlta, userAgent);
-        //assertTrue( true );
     }
     
     @Test
@@ -77,7 +81,6 @@ public class RealizarSimulacionTest {
     	usuarioAlta.setNumTarjeta(NUM_TARJETA);
     	String userAgent = "AGENT";
     	zendeskService.altaTicketZendesk(usuarioAlta, userAgent);
-        //assertTrue( true );
     }
 
 }
