@@ -13,8 +13,10 @@ import util.datos.UsuarioAlta;
  */
 public class RealizarSimulacionTest extends TestCase {
 
+	private static String NUM_TARJETA = "NUM_TARJETA";
+	private static String NUM_POLIZA = "NUM_POLIZA";
 
-	ZendeskService zendeskService;
+	ZendeskService zendeskService = new ZendeskService();
 	
     /**
      * Rigourous Test :-)
@@ -26,9 +28,17 @@ public class RealizarSimulacionTest extends TestCase {
     
     @Test
     public void testUsuarioSinPolizaNiTarjeta() {
-    	zendeskService = new ZendeskService();
-
     	UsuarioAlta usuarioAlta = new UsuarioAlta();
+    	String userAgent = "AGENT";
+    	zendeskService.altaTicketZendesk(usuarioAlta, userAgent);
+        assertTrue( true );
+    }
+    
+    @Test
+    public void testUsuarioConPolizaYTarjeta() {
+    	UsuarioAlta usuarioAlta = new UsuarioAlta();
+    	usuarioAlta.setNumPoliza(NUM_POLIZA);
+    	usuarioAlta.setNumTarjeta(NUM_TARJETA);
     	String userAgent = "AGENT";
     	zendeskService.altaTicketZendesk(usuarioAlta, userAgent);
         assertTrue( true );
