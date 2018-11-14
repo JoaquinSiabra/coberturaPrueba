@@ -40,6 +40,7 @@ public class ZendeskService {
     private static final String ESCAPED_LINE_SEPARATOR = "\\n";
     private static final String ESCAPE_ER = "\\";
     private static final String HTML_BR = "<br/>";
+    
     @Value("#{envPC['zendesk.ticket']}")
     public String PETICION_ZENDESK= "";
 
@@ -123,13 +124,7 @@ public class ZendeskService {
         else if(StringUtils.isNotBlank(usuarioAlta.getNumPoliza())){
             try
             {
-                Poliza poliza = new Poliza();
-                poliza.setNumPoliza(Integer.valueOf(usuarioAlta.getNumPoliza()));
-                poliza.setNumColectivo(Integer.valueOf(usuarioAlta.getNumDocAcreditativo()));
-                poliza.setCompania(1);
-
-                PolizaBasico polizaBasicoConsulta = new PolizaBasicoFromPolizaBuilder().withPoliza( poliza ).build();
-
+                PolizaBasico polizaBasicoConsulta = zendeskHelper.createPolizaBasicoFromUsuarioAlta(usuarioAlta);
                 final util.datos.DetallePoliza detallePolizaResponse = portalclientesWebEJBRemote.recuperarDatosPoliza(polizaBasicoConsulta);
 
                 clientName.append(detallePolizaResponse.getTomador().getNombre()).

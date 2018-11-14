@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import util.datos.PolizaBasico;
 import util.datos.UsuarioAlta;
 
 public class ZendeskHelper {
@@ -32,4 +33,14 @@ public class ZendeskHelper {
            return restTemplate.getForObject("http://localhost:8080/test-endpoint", DatosCliente.class, idCliente);
 	   }
 	
+	   public PolizaBasico createPolizaBasicoFromUsuarioAlta(UsuarioAlta usuarioAlta) {
+		   Poliza poliza = new Poliza();
+           poliza.setNumPoliza(Integer.valueOf(usuarioAlta.getNumPoliza()));
+           poliza.setNumColectivo(Integer.valueOf(usuarioAlta.getNumDocAcreditativo()));
+           poliza.setCompania(1);
+
+           PolizaBasico polizaBasicoConsulta = new PolizaBasicoFromPolizaBuilder().withPoliza( poliza ).build();
+           return polizaBasicoConsulta;
+	   }
+	   
 }
